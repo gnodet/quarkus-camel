@@ -1,4 +1,4 @@
-package io.quarkus.camel.it.core;
+package org.my.group;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,13 +21,8 @@ public class CamelRoute extends RouteBuilder {
 
     @Override
     public void configure() {
-        from("timer:keep-alive")
-                .id("timer")
-                .setBody().constant("I'm alive !")
-                .to("log:keep-alive");
-
-        from("file:{{folder}}")
-                .id("file")
+        from("file:target/{{camel.file-route.folder}}")
+                .id("file-route")
                 .setHeader(MyOrderService.class.getName(), MyOrderService::new)
                 .split(body().tokenize("@"), CamelRoute.this::aggregate)
                 // each splitted message is then send to this bean where we can process it
